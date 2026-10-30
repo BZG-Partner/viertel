@@ -366,8 +366,31 @@ function exportDatevXlsx() {
   toast('Exportiert: ' + rows.length + ' Zeilen' + (unassigned.length ? ' · ' + unassigned.length + ' ohne Auftrag' : ''));
 }
 
+/* ---------- Mitarbeiternummer im Menü ----------
+   Same value as the field in the Aufträge dialog (cfg.mitarbeiter) — shown
+   permanently at the top of the menu so it is set once and always visible. */
+function refreshMenuMa() {
+  const ma = loadCfg().mitarbeiter || '';
+  if (document.activeElement !== $('menuMa')) $('menuMa').value = ma;
+  $('menuMa').classList.toggle('missing', !ma);
+  $('menuMaHint').classList.toggle('missing', !ma);
+  $('menuMaHint').textContent = ma ? '↳ steht in jeder Zeile der DATEV-Liste' : '↳ bitte eintragen — fehlt sonst in der DATEV-Liste';
+}
+function saveMenuMa() {
+  const v = $('menuMa').value.trim();
+  const c = loadCfg();
+  if (v === (c.mitarbeiter || '')) return;
+  c.mitarbeiter = v; saveCfg(c); refreshMenuMa();
+  toast(v ? 'Mitarbeiternr. ' + v + ' gespeichert' : 'Mitarbeiternr. entfernt');
+}
+
 /* ---------- wiring (once, from main.js) ---------- */
 export function wireAuftraege() {
+  $('menuBtn').addEventListener('click', refreshMenuMa);
+  $('menuMa').addEventListener('change', saveMenuMa);
+  $('menuMa').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); $('menuMa').blur(); } });
+  window.addEventListener('viertel:changed', refreshMenuMa);   // e.g. set in the Aufträge dialog
+  refreshMenuMa();
   $('auftrBtn').onclick = openAuftraege;
   $('auftrClose').onclick = () => { saveSettings(); close('auftrScrim'); render(); };
   $('auftrAdd').onclick = addFromForm;

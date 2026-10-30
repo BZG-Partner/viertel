@@ -187,8 +187,10 @@
   /* Disabled reminder select reads as inherited-from-block-size, not broken. */
   .hsel:disabled{opacity:.5;cursor:not-allowed}
   .menu-sep{height:1px;background:var(--line-soft);margin:4px 2px}
-  .menu-credit{padding:6px 10px 2px;font-size:10.5px;line-height:1.4;color:var(--text-faint)}
-  .menu-credit a{color:inherit}
+  /* Mitarbeiternummer: a fixed field at the top of the menu */
+  .menu-ma{width:118px;cursor:text;text-align:right}
+  .menu-ma.missing{border-color:var(--warn)}
+  #menuMaHint.missing{color:var(--warn);opacity:1}
   .menu-item{
     font-family:'Geist';font-size:13px;font-weight:500;color:var(--text);
     background:transparent;border:0;border-radius:8px;text-align:left;width:100%;

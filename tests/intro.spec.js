@@ -48,16 +48,6 @@ test.describe('first-run welcome', () => {
     await expect(page.locator('#intro')).not.toHaveClass(/show/);
   });
 
-  test('menu fine print credits the upstream project (KIDEON time on GitHub)', async ({ page }) => {
-    await freshIntro(page);
-    await page.locator('#introStart').click();
-    await page.locator('#menuBtn').click();
-    const more = page.locator('.menu-credit a');
-    await expect(more).toBeVisible();
-    await expect(more).toHaveAttribute('href', 'https://github.com/Kideon-Innovation/time');
-    await expect(more).toHaveAttribute('target', '_blank');
-  });
-
   test('no in-product marketing wall: the old landing sections are gone', async ({ page }) => {
     await freshIntro(page);
     // The comparison / focus / 3-step pitch and the in-app demo were removed.

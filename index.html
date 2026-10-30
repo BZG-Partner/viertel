@@ -41,7 +41,7 @@
 <!-- First-run welcome — a small "was ist das?" card floating over the app, not a
      full-screen wall. The app stays visible behind it; click the backdrop, the ×
      or "Loslegen" to dismiss. Also re-opened via the menu's "Was ist das?".
-     Viertel is a fork of KIDEON time (MIT) — credited in the menu's fine print. -->
+     Viertel is a fork of KIDEON time (MIT) — credited in LICENSE and README. -->
 <div class="intro" id="intro" aria-hidden="true">
   <div class="intro-wrap" role="dialog" aria-modal="true" aria-labelledby="introTitle">
     <button class="intro-x" id="introClose" title="Schließen" aria-label="Schließen">×</button>
@@ -96,6 +96,11 @@
       <div class="menu-wrap">
         <button class="btn icon" id="menuBtn" title="Menü" aria-haspopup="true" aria-expanded="false">☰</button>
         <div class="menu" id="menu" hidden>
+          <label class="menu-row"><span>Mitarbeiternr.</span>
+            <input class="hsel mono menu-ma" id="menuMa" inputmode="numeric" autocomplete="off" placeholder="z. B. 100" aria-label="Mitarbeiternummer (DATEV)">
+          </label>
+          <div class="menu-hint" id="menuMaHint">↳ steht in jeder Zeile der DATEV-Liste</div>
+          <div class="menu-sep"></div>
           <label class="menu-row"><span>Blockgröße</span>
             <select class="hsel" id="intervalSel" title="Blockgröße = dein Abrechnungstakt"></select>
           </label>
@@ -108,7 +113,7 @@
           </label>
           <div class="menu-sep"></div>
           <button class="menu-item" id="datevListMenu">⏱ DATEV-Liste (heute)</button>
-          <button class="menu-item" id="auftrBtn">📁 Aufträge &amp; Mitarbeiternr.</button>
+          <button class="menu-item" id="auftrBtn">📁 Aufträge</button>
           <button class="menu-item" id="syncBtn">☁ OneDrive-Ablage</button>
           <div class="menu-sep"></div>
           <button class="menu-item" id="themeBtn">🌙 Theme</button>
@@ -122,8 +127,6 @@
                (see main.js). Hidden once the app is installed. -->
           <button class="menu-item" id="installBtn">↗ App installieren</button>
           <button class="menu-item" id="aboutBtn">❓ Was ist das?</button>
-          <div class="menu-credit">Open Source (MIT) · basiert auf
-            <a href="https://github.com/Kideon-Innovation/time" target="_blank" rel="noopener noreferrer">KIDEON time</a></div>
         </div>
       </div>
       <input type="file" id="importFile" accept=".xlsx,.xls" hidden>
