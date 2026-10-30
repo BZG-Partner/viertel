@@ -21,7 +21,7 @@
    wird die Zeile markiert („in DATEV: 1,00“). Blöcke ohne bekanntes Kürzel werden
    gesondert aufgeführt statt verschluckt. Zeitraum-Export als `.xlsx` in DATEV-Spalten.
 
-**Bereitstellung über GitHub Pages** — <https://jan-bzg.github.io/viertel/>
+**Bereitstellung über GitHub Pages** — <https://bzg-partner.github.io/viertel/>
 
 Jeder Push auf `main` baut und veröffentlicht Viertel (`.github/workflows/pages.yml`,
 vorher laufen die Unit-Tests). Als Webseite kann Viertel als App installiert werden,
