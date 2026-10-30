@@ -27,9 +27,8 @@ test('self-hosted webfonts actually load (no silent fallback to system fonts)', 
   await page.goto('./');
   await page.evaluate(() => document.fonts.ready);
   const loaded = await page.evaluate(() => ({
-    sans: document.fonts.check('14px "DM Sans"'),
-    serif: document.fonts.check('30px "Instrument Serif"'),
-    mono: document.fonts.check('22px "JetBrains Mono"'),
+    sans: document.fonts.check('14px "Geist"'),
+    mono: document.fonts.check('22px "Geist Mono"'),
   }));
-  expect(loaded).toEqual({ sans: true, serif: true, mono: true });
+  expect(loaded).toEqual({ sans: true, mono: true });
 });

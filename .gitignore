@@ -1,6 +1,7 @@
 # build / dependencies
 node_modules/
 dist/
+dist-single/
 dev-dist/
 
 # test / dev artifacts

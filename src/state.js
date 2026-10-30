@@ -25,6 +25,7 @@
 //     hard to misuse (you cannot accidentally shadow them with a local copy).
 
 import { startOfDay } from './time.js';
+import { signalChange } from './changed.js';
 
 /* ---------- localStorage key + config constants ---------- */
 export const KEY = 'timelog.v1';
@@ -33,26 +34,21 @@ export const CATCHUP_CAP_MS = 2 * 60 * 60 * 1000;   // only ask back ~2h
 /* Morgen-Modus boundary: gaps that reach back across today 06:00 local are a
    night's sleep, not forgotten work — see morningMode() in blocks.js. */
 export const MORNING_BOUNDARY_HOUR = 6;
-/* Calm, Kideon-harmonious block hues — mid-tone, readable on off-white and navy. */
-export const PALETTE = ['#c49a6c', '#5f8f8c', '#c0766a', '#6b86b0', '#a07fa6',
-  '#8aa173', '#c2935a', '#5b9aa0', '#d0a85c', '#9488c0', '#c98bab', '#79a3c4'];
+/* Soft, pastel-leaning block hues — mid-tone so the tinted fill and the label
+   stay readable on white and on black. */
+export const PALETTE = ['#8b7cf6', '#f0906e', '#4fb39a', '#5b9cf0', '#e27fae',
+  '#d9a53f', '#7fae5f', '#a57cf0', '#e8775f', '#45a9c4', '#c98bd6', '#8a96ad'];
 export const HOUR_PX = 116;
 export const PX_PER_MIN = HOUR_PX / 60;
 export const DOW = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
 export const MON = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
 
 /* ---------- persisted state (mutate fields, never reassign the binding) ---------- */
-// First-run theme default: honor the OS preference so dark-mode users don't get
-// flash-banged by a light UI on their very first visit. Only affects a FRESH
-// state with no stored settings — any persisted `theme` still wins on merge, so
-// returning users (incl. those who picked light) are never overridden.
-function defaultTheme() {
-  try {
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme:dark)').matches) return 'dark';
-  } catch (e) { /* no matchMedia → fall through to light */ }
-  return 'light';
-}
-
+// Theme: Viertel is a light app by design (white canvas, ink type) — it no
+// longer follows the OS dark preference, which in remote-desktop sessions is
+// often set centrally. Dark stays one click away in the menu; only a theme the
+// user picked THERE (themeChosen) is kept. Older payloads whose 'dark' came
+// from the OS auto-detection are reset to light once in parseRaw.
 function defaultSettings(slotMin) {
   return {
     // reminderMin defaults to the block size and reminderCoupled to true, so a
@@ -60,7 +56,7 @@ function defaultSettings(slotMin) {
     // EXACTLY today's behaviour: the reminder cadence equals the block size.
     intervalMin: slotMin, reminderMin: slotMin, reminderCoupled: true,
     soundOn: true, notifyOn: false, introSeen: false,
-    notifyNudgeDismissed: false, exportReminderDay: '', exportNotifyDay: '', theme: defaultTheme(),
+    notifyNudgeDismissed: false, exportReminderDay: '', exportNotifyDay: '', theme: 'light',
   };
 }
 
@@ -80,7 +76,7 @@ function parseRaw(raw, slotMin) {
       return {
         blocks: s.blocks,
         recentLabels: s.recentLabels || [],
-        settings: Object.assign(base, stored),
+        settings: Object.assign(base, stored, stored.themeChosen ? {} : { theme: 'light' }),
         savedAt: Number.isFinite(s.savedAt) ? s.savedAt : undefined,
       };
     }
@@ -184,6 +180,7 @@ export function save() {
     });
     localStorage.setItem(KEY, out);
     _synced = out; _base = snapshot(state); _baseSavedAt = savedAt;
+    signalChange();
   } catch (e) {
     if (_onSaveError) _onSaveError(e);
   }

@@ -1,66 +1,71 @@
   /* Self-hosted @font-face rules (privacy: no Google-Fonts CDN). */
   @import './fonts.css';
 
-  /* Kideon light theme — default. Off-White / Navy / Copper. */
+  /* Viertel light theme — default. White canvas with a soft pastel haze,
+     near-black type, black pill buttons (style after zugutschein.de). */
   :root{
-    --bg:#faf9f7;
+    --bg:#ffffff;
     --bg-raised:#ffffff;
-    --bg-sunken:#f3f1ed;
-    --line:#e5e2dc;
-    --line-soft:#eeedea;
-    --text:#0f2137;
-    --text-dim:#4d5f73;
-    /* #7a8a9a was only 3.37:1 on light bg — fails AA for the 11-12px body text
-       that uses it (intro notes/foot, empty-sub, countdown meta). Darkened to
-       clear 4.5:1. Dark theme keeps its own value below. */
-    --text-faint:#5f7081;
-    --accent:#c49a6c;
-    /* --accent (#c49a6c) on light bg is only 2.44:1 — fine for fills/borders,
-       fails WCAG AA (4.5:1) for TEXT. Use this darker copper for accent-colored
-       text so small uppercase labels / numbers stay legible. */
-    --accent-text:#8a6324;
-    --accent-soft:rgba(196,154,108,.14);
-    --on-accent:#0f2137;
-    --now:#dc2626;
-    --radius:10px;
-    --shadow:0 12px 40px rgba(15,33,55,.08), 0 4px 12px rgba(15,33,55,.04);
-    --glow:#ffffff;
-    --block-lbl:#0f2137;
+    --bg-sunken:#f4f4f6;
+    --line:#e6e6eb;
+    --line-soft:#f0f0f3;
+    --text:#1d1d1f;
+    --text-dim:#515154;
+    /* 4.6:1 on white — clears AA for the small 11–12px labels that use it */
+    --text-faint:#6e6e73;
+    /* the "accent" is ink: primary buttons, today, focus ring */
+    --accent:#111113;
+    --accent-text:#111113;
+    --accent-soft:rgba(124,99,255,.10);
+    --on-accent:#ffffff;
+    /* warm signal for warnings (rows without Auftrag, changed after DATEV) */
+    --warn:#b45309;
+    --warn-soft:rgba(245,158,11,.12);
+    --now:#e5484d;
+    --radius:16px;
+    --shadow:0 1px 2px rgba(17,17,19,.04), 0 12px 40px rgba(17,17,19,.08);
+    --haze-a:rgba(196,181,255,.35);
+    --haze-b:rgba(255,200,180,.30);
+    --haze-c:rgba(190,215,255,.35);
+    --glass:rgba(255,255,255,.72);
+    --block-lbl:#1d1d1f;
     --block-lbl-shadow:none;
-    --grain:.02;
-    --scrim:rgba(15,33,55,.45);
-    --btn-hover-bg:#f3f1ed;
-    --btn-hover-line:#d8cdbb;
-    /* destructive (.del) hover — light red wash on the light theme */
-    --del-hover-bg:rgba(220,38,38,.08);
+    --grain:0;
+    --scrim:rgba(17,17,19,.32);
+    --btn-hover-bg:#f4f4f6;
+    --btn-hover-line:#d2d2d7;
+    --del-hover-bg:rgba(229,72,77,.08);
     color-scheme:light;
   }
-  /* Kideon dark theme — navy-based, copper accent. */
+  /* Viertel dark theme — black canvas, graphite cards, white pill buttons. */
   html[data-theme="dark"]{
-    --bg:#0f2137;
-    --bg-raised:#1a3352;
-    --bg-sunken:#0a1828;
-    --line:#2b4a6e;
-    --line-soft:#1f3a59;
-    --text:#f3f5f8;
-    --text-dim:#aebed0;
-    --text-faint:#7a8ca0;
-    --accent:#c49a6c;
-    /* Dark theme: copper on navy already clears AA, so accent text == accent. */
-    --accent-text:#c49a6c;
-    --accent-soft:rgba(196,154,108,.18);
-    --on-accent:#0f2137;
-    --now:#ff6b6b;
-    --shadow:0 8px 30px rgba(0,0,0,.45);
-    --glow:#1a3352;
-    --block-lbl:#fff;
+    --bg:#000000;
+    --bg-raised:#1c1c1e;
+    --bg-sunken:#141416;
+    --line:#2c2c2e;
+    --line-soft:#1f1f22;
+    --text:#f5f5f7;
+    --text-dim:#c7c7cc;
+    --text-faint:#8e8e93;
+    --accent:#f5f5f7;
+    --accent-text:#f5f5f7;
+    --accent-soft:rgba(160,140,255,.16);
+    --on-accent:#000000;
+    --warn:#fbbf24;
+    --warn-soft:rgba(251,191,36,.14);
+    --now:#ff6369;
+    --shadow:0 12px 40px rgba(0,0,0,.6);
+    --haze-a:rgba(124,99,255,.16);
+    --haze-b:rgba(255,140,110,.10);
+    --haze-c:rgba(80,140,255,.12);
+    --glass:rgba(28,28,30,.72);
+    --block-lbl:#ffffff;
     --block-lbl-shadow:0 1px 2px #00000099;
-    --grain:.03;
-    --scrim:rgba(6,12,20,.7);
-    --btn-hover-bg:#234062;
-    --btn-hover-line:#3a5d85;
-    /* destructive (.del) hover — dark red-brown, reads on navy */
-    --del-hover-bg:#2a1813;
+    --grain:0;
+    --scrim:rgba(0,0,0,.6);
+    --btn-hover-bg:#2c2c2e;
+    --btn-hover-line:#3a3a3c;
+    --del-hover-bg:#2a1315;
     color-scheme:dark;
   }
   *{box-sizing:border-box;margin:0;padding:0}
@@ -82,7 +87,7 @@
       radial-gradient(1200px 600px at 80% -10%, var(--glow) 0%, transparent 60%),
       var(--bg);
     color:var(--text);
-    font-family:'DM Sans',sans-serif;
+    font-family:'Geist',sans-serif;
     font-size:14px;
     line-height:1.4;
     overflow:hidden;
@@ -99,7 +104,7 @@
     content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:var(--grain);
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
-  .mono{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums}
+  .mono{font-family:'Geist Mono',monospace;font-variant-numeric:tabular-nums}
 
   /* ---------- layout ---------- */
   .app{display:flex;flex-direction:column;height:100vh;height:100dvh}
@@ -118,7 +123,7 @@
   header button,header select,header .countdown{-webkit-app-region:no-drag}
   .brand{display:flex;align-items:baseline;gap:10px}
   .brand h1{
-    font-family:'Instrument Serif',serif;font-weight:400;font-size:30px;
+    font-family:'Geist',serif;font-weight:400;font-size:30px;
     letter-spacing:.3px;line-height:1;
   }
   .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--accent);
@@ -126,7 +131,7 @@
   .brand small{color:var(--text-faint);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
 
   .clock{display:flex;flex-direction:column;line-height:1.15}
-  .clock .big{font-family:'JetBrains Mono';font-size:22px;font-weight:700;letter-spacing:1px}
+  .clock .big{font-family:'Geist Mono';font-size:22px;font-weight:700;letter-spacing:1px}
   .clock .sub{font-size:11px;color:var(--text-dim)}
 
   .countdown{
@@ -136,20 +141,20 @@
   .countdown .ring{position:relative;width:38px;height:38px;flex:0 0 38px}
   .countdown .ring svg{transform:rotate(-90deg)}
   .countdown .ring .t{position:absolute;inset:0;display:grid;place-items:center;
-    font-family:'JetBrains Mono';font-size:10px;font-weight:700;color:var(--accent-text)}
+    font-family:'Geist Mono';font-size:10px;font-weight:700;color:var(--accent-text)}
   /* Label sits ABOVE the number so the countdown reads as "nächster Ping in
      14:23" rather than as a time range next to the wall clock. The number is
      dimmed + lighter-weight so it clearly de-emphasises against the big clock. */
   .countdown .meta{display:flex;flex-direction:column;line-height:1.15}
   .countdown .meta .cd-lbl{font-size:9.5px;color:var(--text-faint);letter-spacing:.05em;
     text-transform:uppercase}
-  .countdown .meta b{font-family:'JetBrains Mono';font-size:14px;font-weight:500;color:var(--text-dim)}
+  .countdown .meta b{font-family:'Geist Mono';font-size:14px;font-weight:500;color:var(--text-dim)}
 
   .spacer{flex:1}
 
   .controls{display:flex;align-items:center;gap:8px}
   button.btn{
-    font-family:'DM Sans';font-size:12.5px;font-weight:500;color:var(--text);
+    font-family:'Geist';font-size:12.5px;font-weight:500;color:var(--text);
     background:var(--bg-raised);border:1px solid var(--line);border-radius:8px;
     height:34px;padding:0 13px;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;justify-content:center;gap:7px;
   }
@@ -158,7 +163,7 @@
   button.btn.amber:hover{filter:brightness(1.07)}
   button.btn.ghost{background:transparent}
   button.icon{width:34px;height:34px;padding:0;justify-content:center;font-size:15px}
-  .hsel{font-family:'JetBrains Mono';font-size:12px;color:var(--text);background:var(--bg-raised);
+  .hsel{font-family:'Geist Mono';font-size:12px;color:var(--text);background:var(--bg-raised);
     border:1px solid var(--line);border-radius:8px;height:34px;padding:0 10px;cursor:pointer}
   .hsel:hover{border-color:var(--btn-hover-line)}
 
@@ -182,8 +187,10 @@
   /* Disabled reminder select reads as inherited-from-block-size, not broken. */
   .hsel:disabled{opacity:.5;cursor:not-allowed}
   .menu-sep{height:1px;background:var(--line-soft);margin:4px 2px}
+  .menu-credit{padding:6px 10px 2px;font-size:10.5px;line-height:1.4;color:var(--text-faint)}
+  .menu-credit a{color:inherit}
   .menu-item{
-    font-family:'DM Sans';font-size:13px;font-weight:500;color:var(--text);
+    font-family:'Geist';font-size:13px;font-weight:500;color:var(--text);
     background:transparent;border:0;border-radius:8px;text-align:left;width:100%;
     padding:8px 10px;cursor:pointer;display:flex;align-items:center;gap:9px;
   }
@@ -201,11 +208,11 @@
   /* ---------- date nav ---------- */
   .subbar{display:flex;align-items:center;gap:14px;padding:11px 24px;border-bottom:1px solid var(--line);
     background:var(--bg)}
-  .subbar .range{font-family:'Instrument Serif';font-size:21px}
+  .subbar .range{font-family:'Geist';font-size:21px}
   .subbar .range em{font-style:normal;color:var(--text-dim)}
   .subbar input[type=date]{
     background:var(--bg-raised);border:1px solid var(--line);color:var(--text);
-    border-radius:8px;padding:7px 10px;font-family:'JetBrains Mono';font-size:12px}
+    border-radius:8px;padding:7px 10px;font-family:'Geist Mono';font-size:12px}
   .legend{display:flex;gap:12px;margin-left:auto;flex-wrap:wrap;max-width:46%;justify-content:flex-end}
   .legend .chip{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--text-dim);
     min-width:0;max-width:200px}
@@ -250,8 +257,8 @@
   .col-head.today{color:var(--accent)}
   .col-head .dow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-faint)}
   .col-head.today .dow{color:var(--accent)}
-  .col-head .dnum{font-family:'Instrument Serif';font-size:23px;line-height:1.1}
-  .col-head .tot{font-family:'JetBrains Mono';font-size:10.5px;color:var(--text-dim);margin-top:1px}
+  .col-head .dnum{font-family:'Geist';font-size:23px;line-height:1.1}
+  .col-head .tot{font-family:'Geist Mono';font-size:10.5px;color:var(--text-dim);margin-top:1px}
 
   .gutter{grid-column:1;display:flex;flex-direction:column}
   /* hour labels are anchored to this relative box, which sits below the gutter's
@@ -259,7 +266,7 @@
      3-line markup so it lays out to the same height — keeping .gutgrid and each
      day's .daygrid on one origin so the hour labels align with the hour lines. */
   .gutgrid{position:relative}
-  .hr-label{position:absolute;right:8px;font-family:'JetBrains Mono';font-size:10px;
+  .hr-label{position:absolute;right:8px;font-family:'Geist Mono';font-size:10px;
     color:var(--text-faint);transform:translateY(-6px)}
 
   .daycol{display:flex;flex-direction:column;border-left:1px solid var(--line-soft)}
@@ -273,7 +280,7 @@
     background:var(--accent-soft);z-index:5;pointer-events:none}
   .selbox .sl{display:block;font-size:12px;font-weight:600;color:var(--accent);
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .selbox .st{font-family:'JetBrains Mono';font-size:9.5px;color:var(--text-dim)}
+  .selbox .st{font-family:'Geist Mono';font-size:9.5px;color:var(--text-dim)}
   body.dragging{user-select:none}
   .daycol.today{background:linear-gradient(180deg,#f5a6230a,transparent 30%)}
   .hr-line{position:absolute;left:0;right:0;height:1px;background:var(--line-soft)}
@@ -305,7 +312,7 @@
     transition:opacity .08s ease,transform .08s ease;transition-delay:0s;
   }
   .beat-tip .beat-tip-h{display:block;font-weight:700;color:var(--accent);
-    font-family:'JetBrains Mono';font-size:10.5px;margin-bottom:3px}
+    font-family:'Geist Mono';font-size:10.5px;margin-bottom:3px}
   /* flip to the left edge for the rightmost column so the card never overflows the viewport */
   .daycol:last-child .beat-tip{left:auto;right:16px}
   .beat:hover .beat-tip,
@@ -320,7 +327,7 @@
   }
   .block:hover{filter:brightness(1.18);transform:translateX(1px);z-index:4;box-shadow:inset 0 0 0 1px var(--bc),0 2px 8px #00000077}
   .block .lbl{font-size:12px;font-weight:600;color:var(--block-lbl);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:var(--block-lbl-shadow)}
-  .block .tm{font-family:'JetBrains Mono';font-size:9.5px;color:var(--text-dim)}
+  .block .tm{font-family:'Geist Mono';font-size:9.5px;color:var(--text-dim)}
   /* Resize hit-zones at the top/bottom edge of each block. Generous on touch
      (fingers); a thin grab strip on the pointer. They sit above the block body
      so a press there starts a resize, while a press anywhere else moves. */
@@ -349,7 +356,7 @@
 
   .empty-hint{position:absolute;left:50%;top:38%;transform:translateX(-50%);text-align:center;
     color:var(--text-faint);width:80%}
-  .empty-hint .em{font-family:'Instrument Serif';font-size:19px;font-style:italic;color:var(--text-dim)}
+  .empty-hint .em{font-family:'Geist';font-size:19px;font-style:italic;color:var(--text-dim)}
   .empty-hint .empty-sub{margin-top:6px;font-size:12px;line-height:1.4;color:var(--text-faint)}
 
   /* ---------- modal ---------- */
@@ -369,7 +376,7 @@
   .modal-b::-webkit-scrollbar-thumb{background:var(--line);border-radius:6px;border:3px solid var(--bg)}
   .modal-h{padding:22px 24px 8px;flex:0 0 auto}
   .modal-h .kick{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent-text)}
-  .modal-h h2{font-family:'Instrument Serif';font-weight:400;font-size:27px;margin-top:3px}
+  .modal-h h2{font-family:'Geist';font-weight:400;font-size:27px;margin-top:3px}
   .modal-h p{color:var(--text-dim);font-size:13px;margin-top:4px}
   .modal-b{padding:8px 24px 4px;overflow-y:auto;flex:1 1 auto;min-height:0}
   .modal-f{padding:16px 24px 22px;display:flex;gap:10px;align-items:center;flex:0 0 auto;
@@ -377,12 +384,12 @@
 
   input.txt,select.txt{
     width:100%;background:var(--bg-sunken);border:1px solid var(--line);border-radius:10px;
-    color:var(--text);font-family:'DM Sans';font-size:15px;padding:13px 14px;outline:none;transition:.15s}
+    color:var(--text);font-family:'Geist';font-size:15px;padding:13px 14px;outline:none;transition:.15s}
   input.txt:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
   label.fl{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-faint);margin:14px 0 7px}
 
   .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-  .chip-b{font-family:'DM Sans';font-size:12.5px;color:var(--text);background:var(--bg-sunken);
+  .chip-b{font-family:'Geist';font-size:12.5px;color:var(--text);background:var(--bg-sunken);
     border:1px solid var(--line);border-left:3px solid var(--bc,#888);border-radius:20px;padding:6px 13px;cursor:pointer;transition:.13s;
     max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .chip-b.same{max-width:100%}
@@ -391,7 +398,7 @@
 
   /* catch-up rows */
   .gaprow{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line-soft)}
-  .gaprow .tg{font-family:'JetBrains Mono';font-size:12px;color:var(--text-dim);flex:0 0 96px}
+  .gaprow .tg{font-family:'Geist Mono';font-size:12px;color:var(--text-dim);flex:0 0 96px}
   .gaprow input{flex:1;background:var(--bg-sunken);border:1px solid var(--line);border-radius:8px;
     color:var(--text);font-size:13.5px;padding:9px 11px;outline:none}
   .gaprow input:focus{border-color:var(--accent)}
@@ -441,7 +448,7 @@
      `button.btn:hover` and keeps the red + theme-aware tint on hover. */
   button.btn.del{color:var(--now);background:transparent;border:1px solid var(--line)}
   button.btn.del:hover{color:var(--now);background:var(--del-hover-bg);border-color:var(--now)}
-  kbd{font-family:'JetBrains Mono';font-size:10px;background:var(--bg-sunken);border:1px solid var(--line);
+  kbd{font-family:'Geist Mono';font-size:10px;background:var(--bg-sunken);border:1px solid var(--line);
     border-radius:4px;padding:1px 5px;color:var(--text-dim)}
 
   /* ---------- install affordance (menu item + intro card) ----------
@@ -460,7 +467,7 @@
   .ioslist li:last-child{border-bottom:0}
   .ioslist li::before{counter-increment:step;content:counter(step);position:absolute;left:0;top:9px;
     width:26px;height:26px;border-radius:50%;background:var(--accent-soft);color:var(--accent);
-    display:grid;place-items:center;font-family:'JetBrains Mono';font-size:12px;font-weight:700}
+    display:grid;place-items:center;font-family:'Geist Mono';font-size:12px;font-weight:700}
   .ioslist b{color:var(--text)}
   .shareglyph{display:inline-grid;place-items:center;width:22px;height:22px;border:1px solid var(--line);
     border-radius:5px;vertical-align:-6px;color:var(--now);font-size:13px}
@@ -525,7 +532,7 @@
 
 
   /* ---------- first-run welcome (minimal) ----------
-     The marketing landing now lives at https://kideon.de/time. This overlay is
+     The upstream marketing landing lives at https://kideon.de/time. This overlay is
      just a quiet, clean entry into the tool — dismissed once via #introStart and
      never shown again (introSeen). The install help modal must sit above it. */
   #installScrim{z-index:400}
@@ -552,7 +559,7 @@
     box-shadow:0 0 0 5px var(--accent-soft);margin-bottom:18px}
   .intro-kick{font-size:11px;letter-spacing:.18em;text-transform:uppercase;
     color:var(--accent-text);font-weight:600;margin-bottom:8px}
-  .intro h1{font-family:'Instrument Serif',serif;font-weight:400;
+  .intro h1{font-family:'Geist',serif;font-weight:400;
     font-size:clamp(2rem,7vw,2.8rem);line-height:1.05;letter-spacing:.3px;margin-bottom:14px}
   .intro h1 em{font-style:italic;color:var(--accent)}
   .intro .lead{font-size:14.5px;line-height:1.6;color:var(--text-dim);max-width:340px;margin:0 auto}
@@ -571,3 +578,218 @@
   .welcome-more a{color:var(--text-dim);text-decoration:none;font-weight:500;
     border-bottom:1px solid var(--line);transition:.15s}
   .welcome-more a:hover{color:var(--accent);border-bottom-color:var(--accent-soft)}
+
+  /* ============================================================
+     AUFTRÄGE + DATEV-LISTE
+     ============================================================ */
+  .modal.wide{width:min(1180px,100%)}
+  .tbl-wrap{overflow-x:auto;margin-top:8px;border:1px solid var(--line-soft);border-radius:var(--radius)}
+  .tbl{width:100%;border-collapse:collapse;font-size:13px}
+  .tbl th{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-faint);
+    font-weight:500;text-align:left;padding:8px 8px;border-bottom:1px solid var(--line);white-space:nowrap;
+    background:var(--bg-sunken)}
+  .tbl td{padding:6px 8px;border-bottom:1px solid var(--line-soft);vertical-align:middle;white-space:nowrap}
+  .tbl tr:last-child td{border-bottom:0}
+  .tbl td.kz{color:var(--accent-text);font-weight:600}
+  .tbl input[type=checkbox]{accent-color:var(--accent);width:16px;height:16px;cursor:pointer}
+  .icon-btn{background:none;border:0;color:var(--text-faint);cursor:pointer;font-size:15px;padding:4px 6px;border-radius:6px}
+  .icon-btn:hover{color:var(--text);background:var(--bg-sunken)}
+  .icon-btn.fav.on{color:var(--accent)}
+
+  .auftr-form{display:grid;grid-template-columns:1.1fr 1.6fr 1fr 1fr .6fr .6fr 1fr auto auto;gap:6px;align-items:center}
+  .auftr-form input.txt{font-size:13px;padding:9px 10px}
+  .auftr-abr{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text-dim);white-space:nowrap}
+  .auftr-abr input{accent-color:var(--accent)}
+  #auftrPaste{width:100%;background:var(--bg-sunken);border:1px solid var(--line);border-radius:10px;
+    color:var(--text);font-size:12px;padding:10px 12px;resize:vertical;outline:none}
+  #auftrPaste:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+
+  .dv-nav{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+  .dv-nav input[type=date]{font-family:'Geist Mono';font-size:12px;color:var(--text);background:var(--bg-raised);
+    border:1px solid var(--line);border-radius:8px;height:34px;padding:0 10px}
+  .tbl.dv td.kom{white-space:normal;min-width:220px}
+  .tbl.dv .cell{background:none;border:1px dashed transparent;border-radius:6px;padding:3px 6px;
+    font:inherit;color:inherit;cursor:copy;text-align:left}
+  .tbl.dv .cell:hover{border-color:var(--accent);background:var(--accent-soft)}
+  .tbl.dv td:nth-child(2) .cell{font-weight:700;font-size:14px}
+  .tbl.dv small.raw{display:block;font-size:10px;color:var(--text-faint);padding-left:6px}
+  .tbl.dv tr.done td{opacity:.45}
+  .tbl.dv tr.done td:first-child{opacity:1}
+  .tbl.dv tr.changed td{background:var(--accent-soft)}
+  .tbl.dv tr.changed small.raw{color:var(--accent-text);font-weight:600}
+  #datevListBtn{white-space:nowrap}
+  .dv-warn{margin-top:12px;padding:10px 12px;border:1px solid var(--accent);border-radius:var(--radius);
+    background:var(--accent-soft);font-size:13px}
+  .dv-warn .dv-warn-h{font-weight:600;color:var(--accent-text);margin-bottom:4px}
+  .dv-warn ul{margin:0;padding-left:18px}
+  #dvSum .warn{color:var(--accent-text);font-weight:600}
+
+  .auftr-chips{align-items:center}
+  .auftr-chips-lbl{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-faint);margin-right:2px}
+  .chip-b.auftr{font-family:'Geist Mono';font-size:12px;border-style:dashed}
+
+  @media (max-width:760px){
+    .auftr-form{grid-template-columns:1fr 1fr}
+    #datevListBtn{display:none}
+  }
+
+  /* ============================================================
+     VIERTEL LOOK — style after zugutschein.de: white canvas with a soft
+     pastel haze, a floating glass pill as header, tight semibold grotesk,
+     pill buttons (ink primary), big radii, generous whitespace.
+     Kept as one override layer so the upstream rules above stay diffable.
+     ============================================================ */
+  body{
+    background:
+      radial-gradient(900px 520px at 85% -8%, var(--haze-a), transparent 65%),
+      radial-gradient(700px 480px at 8% 4%, var(--haze-c), transparent 60%),
+      radial-gradient(800px 500px at 60% 110%, var(--haze-b), transparent 60%),
+      var(--bg);
+    letter-spacing:-.005em;
+  }
+  ::selection{background:var(--accent-soft)}
+
+  /* header → floating glass pill. backdrop-filter makes the header its own
+     stacking context, so the dropdown menu inside it can only rise as high as
+     the header itself — lift the header above the calendar card, or the menu
+     is painted UNDER the calendar. */
+  header{
+    position:relative;z-index:90;   /* above calendar markers (≤61), below dialogs (100+) */
+    margin:12px 16px 0;padding:10px 12px 10px 22px;gap:18px;
+    border:1px solid var(--line);border-radius:999px;
+    background:var(--glass);backdrop-filter:saturate(1.4) blur(18px);-webkit-backdrop-filter:saturate(1.4) blur(18px);
+    box-shadow:0 1px 2px rgba(17,17,19,.04), 0 8px 24px rgba(17,17,19,.05);
+  }
+  .brand{align-items:center}
+  .brand h1{font-family:'Geist',sans-serif;font-weight:650;font-size:22px;letter-spacing:-.035em}
+  .brand .dot{width:12px;height:12px;transform:none;box-shadow:none;
+    background:conic-gradient(var(--accent) 0 25%,transparent 0);border:1.5px solid var(--accent)}
+  .brand small{letter-spacing:.01em;text-transform:none;font-size:12px}
+  .clock .big{font-weight:600;letter-spacing:-.02em}
+  .countdown{border:0;border-radius:999px;background:var(--bg-sunken);padding:5px 16px 5px 6px}
+  .countdown .ring svg circle:first-child{stroke:var(--line)}
+  #ringProg{stroke:var(--accent)}
+  .countdown .meta .cd-lbl{text-transform:none;letter-spacing:0;font-size:11px}
+
+  /* pill buttons */
+  button.btn{height:38px;padding:0 18px;border-radius:999px;font-size:13.5px;font-weight:550;letter-spacing:-.01em}
+  button.btn.amber{font-weight:600}
+  button.btn.amber:hover{filter:none;opacity:.86}
+  button.btn.ghost{border-color:var(--line)}
+  button.icon{width:38px;height:38px;padding:0}
+  .hsel{border-radius:999px;height:32px;padding:0 12px}
+
+  /* menu */
+  .menu{border-radius:22px;padding:8px;top:calc(100% + 12px)}
+  .menu-item{border-radius:12px;padding:9px 12px}
+  .menu-item[aria-pressed="true"]::after{border-radius:6px}
+
+  /* date bar */
+  .subbar{background:transparent;border-bottom:0;padding:14px 28px 10px}
+  .subbar .range{font-weight:650;font-size:22px;letter-spacing:-.03em}
+  .subbar input[type=date]{border-radius:999px;padding:7px 14px}
+
+  /* calendar → one big rounded card */
+  .cal-wrap{margin:0 16px 16px;border:1px solid var(--line);border-radius:28px;background:var(--bg-raised);
+    box-shadow:0 1px 2px rgba(17,17,19,.03)}
+  .col-head{background:var(--bg-raised);border-bottom:1px solid var(--line-soft);padding:12px}
+  .col-head .dow{letter-spacing:.02em;text-transform:none;font-size:12px;font-weight:500}
+  .col-head .dnum{font-weight:650;font-size:22px;letter-spacing:-.03em}
+  .col-head.today,.col-head.today .dow{color:var(--text)}
+  .col-head.today .dnum{display:inline-grid;place-items:center;min-width:36px;height:36px;padding:0 8px;
+    border-radius:999px;background:var(--accent);color:var(--on-accent);margin:2px 0}
+  .daycol.today{background:linear-gradient(180deg,var(--accent-soft),transparent 35%)}
+  .nowslot{background:var(--accent-soft);border-top:1px dashed var(--line)}
+  .block{border-radius:12px}
+  .empty-hint .em{font-style:normal;font-weight:600;letter-spacing:-.02em;font-size:18px}
+
+  /* modals → soft cards */
+  .scrim{backdrop-filter:blur(6px)}
+  .modal{background:var(--bg-raised);border:1px solid var(--line);border-radius:28px;
+    box-shadow:0 2px 4px rgba(17,17,19,.04), 0 30px 80px rgba(17,17,19,.18)}
+  .modal-h{padding:26px 28px 8px}
+  .modal-h .kick{letter-spacing:.04em;color:var(--text-faint);font-weight:500}
+  .modal-h h2{font-weight:650;font-size:26px;letter-spacing:-.035em;margin-top:4px}
+  .modal-b{padding:8px 28px 4px}
+  .modal-f{padding:16px 28px 24px;border-top:0}
+  input.txt,select.txt{border-radius:14px;border-color:transparent}
+  input.txt:focus{border-color:var(--text);box-shadow:0 0 0 4px var(--accent-soft)}
+  label.fl{letter-spacing:.02em;text-transform:none;font-size:12px;font-weight:500}
+  .edit-split>summary{text-transform:none;letter-spacing:0;font-size:12.5px;font-weight:500}
+  .gaprow input{border-radius:12px}
+
+  /* chips → pills */
+  .chip-b{border-radius:999px;background:var(--bg-raised);border:1px solid var(--line);padding:7px 14px}
+  .chip-b.same{border-color:var(--text);color:var(--text)}
+  .chip-b.auftr{border-style:solid;background:var(--bg-sunken);border-color:transparent}
+  .chip-b.auftr:hover{border-color:var(--text)}
+  .auftr-chips-lbl{text-transform:none;letter-spacing:0;font-size:12px}
+
+  /* toast → ink pill */
+  .toast{border-radius:999px;background:var(--accent);color:var(--on-accent);border:0;padding:12px 20px}
+  .toast-act{color:inherit}
+
+  /* nudges → floating cards */
+  .nudge{margin:10px 16px 0;border:1px solid var(--line);border-radius:20px;background:var(--bg-raised)}
+  .nudge.nudge-export{background:var(--warn-soft);border-color:transparent}
+
+  /* welcome card */
+  .intro-wrap{border-radius:32px}
+  .welcome .dot{width:24px;height:24px;box-shadow:none;
+    background:conic-gradient(var(--accent) 0 25%,transparent 0);border:2px solid var(--accent)}
+  .intro-kick{letter-spacing:.02em;text-transform:none;font-size:13px;font-weight:500;color:var(--text-faint)}
+  .intro h1{font-family:'Geist',sans-serif;font-weight:650;letter-spacing:-.045em}
+  .intro h1 em{font-style:normal;color:var(--text)}
+  .intro-badges li{border-radius:999px}
+  .welcome-cta .btn.amber{border-radius:999px;height:52px;padding:0 34px}
+
+  /* tables / DATEV-Liste */
+  .tbl-wrap{border-radius:20px;border-color:var(--line)}
+  .tbl th{text-transform:none;letter-spacing:.01em;font-size:12px;font-weight:500;background:var(--bg-sunken)}
+  .tbl td.kz{color:var(--text)}
+  .tbl.dv .cell:hover{border-color:var(--text)}
+  .tbl.dv tr.changed td{background:var(--warn-soft)}
+  .tbl.dv tr.changed small.raw,#dvSum .warn,.muted.warn{color:var(--warn)}
+  .dv-warn{border:0;background:var(--warn-soft);border-radius:18px;padding:14px 16px}
+  .dv-warn .dv-warn-h{color:var(--warn)}
+  .dv-nav input[type=date]{border-radius:999px;padding:0 14px}
+  #auftrPaste{border-radius:16px;border-color:transparent}
+  .icon-btn{border-radius:10px}
+
+  @media (max-width:760px){
+    header{margin:8px 8px 0;border-radius:26px;padding:10px 12px}
+    .subbar{padding:10px 14px 8px}
+    .cal-wrap{margin:0 8px 8px;border-radius:22px}
+    .modal{border-radius:28px 28px 0 0}
+  }
+
+  /* DATEV-Import + Suche im Aufträge-Dialog */
+  .auftr-import{display:flex;align-items:center;gap:16px;margin-top:18px;padding:16px 18px;
+    border-radius:20px;background:var(--accent-soft)}
+  .auftr-import>div{flex:1}
+  .auftr-import b{font-weight:600;font-size:14px}
+  .auftr-import .muted{margin-top:3px;line-height:1.45}
+  .auftr-map{margin-top:12px;padding:16px 18px;border:1px solid var(--line);border-radius:20px}
+  .auftr-map[hidden]{display:none}
+  .auftr-map-h{font-size:13px;color:var(--text-dim)}
+  .auftr-map-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:0 12px}
+  .auftr-map select.txt,.auftr-map input.txt{font-size:13px;padding:9px 12px}
+  .auftr-listhead{display:flex;align-items:center;gap:12px;margin-top:18px}
+  .auftr-listhead .muted{flex:1}
+  .auftr-listhead input.txt{max-width:320px;font-size:13px;padding:9px 14px;border-radius:999px}
+  .tbl td.nm{max-width:280px;overflow:hidden;text-overflow:ellipsis}
+  .auftr-chip-name{font-family:'Geist',sans-serif;color:var(--text-faint);margin-left:6px;font-size:11.5px}
+  @media (max-width:760px){
+    .auftr-import{flex-direction:column;align-items:stretch}
+    .auftr-listhead{flex-direction:column;align-items:stretch}
+    .auftr-listhead input.txt{max-width:none}
+  }
+
+  /* OneDrive-Ablage */
+  .sync-card{padding:16px 18px;border:1px solid var(--line);border-radius:20px;margin-top:12px}
+  .sync-card:first-child{margin-top:4px}
+  .sync-card b{font-weight:600}
+  .sync-card .muted{margin-top:4px;line-height:1.45}
+  .sync-status{margin-top:10px;font-size:13px;color:var(--text)}
+  .sync-status.warn{color:var(--warn);font-weight:600}
+  .sync-btns{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}

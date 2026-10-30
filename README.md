@@ -1,4 +1,62 @@
-# KIDEON time
+# Viertel
+
+**Zeiterfassung für Kanzleien im 0,25-Stunden-Takt — mit DATEV-Liste.**
+
+> Viertel ist ein Fork von [KIDEON time](https://github.com/Kideon-Innovation/time) (MIT-Lizenz).
+> Ergänzt um eine Auftragsliste und eine Tagesliste für **DATEV Eigenorganisation comfort**
+> (Zeiten und Kosten Erfassung). Grundprinzip, Datenschutz und Bedienung stammen aus dem
+> Original — dessen README folgt unten unverändert.
+
+**So funktioniert es**
+
+1. **Menü → 📁 Aufträge:** Mitarbeiternummer eintragen, Aufträge anlegen oder aus Excel
+   einfügen (Kürzel · Bezeichnung · Mandant · Auftragsart · VJ · TA · Aufwandspos. · Abr.bar).
+2. **Im Ping:** Das erste Wort eines Blocks ist das Kürzel, der Rest der Kommentar —
+   `A-JA25 Bankabstimmung`. Favoriten (★) erscheinen als Knopf im Ping; das Feld schlägt
+   außerdem alle Kürzel vor. Blöcke eines Auftrags haben dieselbe Farbe.
+3. **DATEV-Liste:** Pro Tag eine Zeile je Auftrag, Felder in der Reihenfolge der
+   DATEV-Erfassungszeile. Die Zeit wird je Tag und Auftrag auf **0,25 Std.** gerundet
+   (Einstellung: jede angefangene Viertelstunde oder kaufmännisch). Feld anklicken =
+   in die Zwischenablage kopieren; Haken = in DATEV erfasst. Ändert sich die Zeit danach,
+   wird die Zeile markiert („in DATEV: 1,00“). Blöcke ohne bekanntes Kürzel werden
+   gesondert aufgeführt statt verschluckt. Zeitraum-Export als `.xlsx` in DATEV-Spalten.
+
+**Bereitstellung über GitHub Pages** — <https://jan-bzg.github.io/viertel/>
+
+Jeder Push auf `main` baut und veröffentlicht Viertel (`.github/workflows/pages.yml`,
+vorher laufen die Unit-Tests). Als Webseite kann Viertel als App installiert werden,
+Windows-Benachrichtigungen schicken und sich selbst aktualisieren. Auf GitHub liegt nur
+der Programmcode; Zeiten und Aufträge bleiben im Browser und in der OneDrive-Ablage.
+
+**Bereitstellung als eine Datei (ohne Server)**
+
+`scripts\build-viertel.ps1` baut `dist-single\Viertel.html` — App, Schriften, Icons und
+SheetJS in einer Datei. Gebaut wird in einer Kopie unter `%LOCALAPPDATA%\viertel-build`
+mit portablem Node.js (`node\`), damit OneDrive die npm-Hilfsdateien nicht synchronisiert.
+
+1. Die Datei in eine SharePoint-Bibliothek legen, die alle lesen und nur die Pflegeperson
+   schreiben darf, und die Bibliothek per OneDrive synchronisieren.
+2. Jede Person öffnet `Viertel.html` aus dem synchronisierten Ordner in **Edge** (nicht
+   über die SharePoint-Weboberfläche) und legt sich eine Verknüpfung an.
+3. Update = Datei ersetzen. Die Daten bleiben erhalten (Browser + OneDrive-Ablage).
+
+Ohne Server gibt es keine App-Installation und keinen Offline-Zwischenspeicher; die
+Datei liegt aber ohnehin lokal synchronisiert vor.
+
+Zeiten, Auftragsliste und Haken liegen im Browser (`timelog.v1`, `timelog.auftraege.v1`,
+`timelog.datevDone.v1`) und — über **☰ → ☁ OneDrive-Ablage** — zusätzlich als Datei in
+einem persönlichen OneDrive-Ordner; eine zentrale DATEV-Auftragsliste aus SharePoint wird
+bei jedem Start eingelesen. Der Import als Buchungsdatei
+(„Extern erzeugte Buchungsdatei importieren“) ist vorbereitet, aber nicht gebaut: das
+Dateiformat ist nicht öffentlich dokumentiert.
+
+---
+
+# Original-README: KIDEON time
+
+*Unverändert übernommen. Wo „KIDEON time“ steht, ist die App gemeint, die heute „Viertel“ heißt;
+Live-URL und Deployment beziehen sich auf das Original.*
+
 
 **Zeiterfassung für Kanzleien.** · **Für Berufsgeheimnisträger (§203) · DSGVO-konform · Funktioniert offline**
 Live: https://time.kideon.de · Mehr erfahren: https://kideon.de/time

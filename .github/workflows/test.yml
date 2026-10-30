@@ -1,7 +1,8 @@
 name: Tests
 
+# Full suite incl. Playwright E2E — on demand and for pull requests. Pushes to
+# main are covered by the unit tests in pages.yml before each deploy.
 on:
-  push:
   pull_request:
   workflow_dispatch:
 

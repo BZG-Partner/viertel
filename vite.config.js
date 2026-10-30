@@ -1,8 +1,8 @@
 import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
-// KIDEON time is served from the domain root (https://time.kideon.de/) on
-// Kideon infrastructure (Coolify, behind nginx). A relative base ('./') makes
+// Viertel (fork of KIDEON time) may be served from a domain root or a subpath
+// on the Kanzlei's own server. A relative base ('./') makes
 // every hashed asset URL resolve against the document URL — exactly like the
 // relative icon/manifest hrefs — so the app keeps working at the root without
 // hard-coding any path prefix. (It also stays portable if ever served under a
@@ -32,10 +32,10 @@ export default defineConfig({
       // Reuse the existing installable-PWA metadata (was manifest.webmanifest)
       // so installability/icons/theme/offline are preserved 1:1.
       manifest: {
-        name: 'KIDEON time — Zeiterfassung für Kanzleien',
-        short_name: 'KIDEON time',
+        name: 'Viertel — Zeiterfassung für Kanzleien',
+        short_name: 'Viertel',
         description:
-          'Zeiterfassung für Kanzleien. KIDEON time fragt dich in festem Takt, woran du arbeitest, und baut deinen Stundenzettel als Blöcke auf. DSGVO-konform, weil alles lokal im Browser bleibt: kein Server, kein Login, voll offline. Export als Excel.',
+          'Zeiterfassung für Kanzleien im 0,25-Stunden-Takt. Viertel fragt dich in festem Takt, woran du arbeitest, und baut deinen Stundenzettel als Blöcke auf. Die Einträge bleiben im Browser auf diesem Rechner: kein Server, kein Login, voll offline. Export als Excel und DATEV-Liste.',
         lang: 'de',
         dir: 'ltr',
         start_url: './',
@@ -44,8 +44,8 @@ export default defineConfig({
         display: 'standalone',
         display_override: ['window-controls-overlay', 'standalone', 'minimal-ui'],
         orientation: 'any',
-        background_color: '#faf9f7',
-        theme_color: '#faf9f7',
+        background_color: '#ffffff',
+        theme_color: '#ffffff',
         categories: ['productivity', 'utilities'],
         icons: [
           { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },

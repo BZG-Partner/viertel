@@ -24,17 +24,19 @@ import {
   beat, gapSlots, morningMode,
 } from './blocks.js';
 import { $ } from './ui/dom.js';
-import { toast, notify, beep } from './ui/notify.js';
+import { toast, notify, notifyTest, beep, attention, notifyBlocked } from './ui/notify.js';
 import {
   initCalendar, render, renderHeaderClock,
   updateNowLine, updateCountdown, scrollToNow,
 } from './ui/calendar.js';
 import {
   openScrim, closeScrim, close, openScrims,
-  openEdit, openLogNow, openMorningPing, openPing,
+  openEdit, openLogNow, openMorningPing, openFirstPing, openPing,
 } from './ui/dialogs.js';
 import { attachDrag } from './ui/drag.js';
 import { rowsToBlocks } from './importRows.js';
+import { initAuftraege, wireAuftraege } from './ui/auftraege.js';
+import { initOneDrive, startOneDrive } from './ui/onedrive.js';
 
 // Thin wrappers so the rest of the app keeps calling floorSlot(d) /
 // nextBoundary(d) unchanged; they supply the active block size to the pure,
@@ -46,7 +48,7 @@ const floorSlot = (d) => floorSlotMin(d, getSlotMin());
 const nextReminder = (d) => nextBoundaryMin(d, getReminderMin());
 
 /* ============================================================
-   KIDEON time — passive time tracker.  MIT License.
+   Viertel (fork of Viertel) — passive time tracker.  MIT License.
    State + config live in state.js; pure time helpers in time.js.
    ============================================================ */
 
@@ -104,9 +106,9 @@ function doExport(){
     data.push([s.toLocaleDateString("de-DE"),DOW[s.getDay()],hhmm(s),hhmm(e),blockDurMin(b),b.label]); });
   const ws=XLSX.utils.aoa_to_sheet(data);
   ws["!cols"]=[{wch:12},{wch:10},{wch:8},{wch:8},{wch:12},{wch:34}];
-  const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,"KIDEON time");
+  const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,"Viertel");
   const tag=(rows[0].start.slice(0,10))+"_bis_"+(rows[rows.length-1].start.slice(0,10));
-  XLSX.writeFile(wb,"kideon_time_"+tag+".xlsx");
+  XLSX.writeFile(wb,"viertel_"+tag+".xlsx");
   markExported();
   close("exportScrim"); toast("Exportiert: "+rows.length+" Blöcke");
 }
@@ -236,13 +238,20 @@ function pingOpenSlots(loud){
   // tab return / boundary covers the rest.
   if(openScrims().length) return;
   if(morningMode()){
-    if(loud){ if(state.settings.soundOn) beep(); notify(1); }
+    if(loud){ if(state.settings.soundOn) beep(); notify(1); attention(); }
     openMorningPing();
+    return;
+  }
+  // No entry yet at all: there is no history to find gaps in, so ask about
+  // NOW on the boundary tick — otherwise a fresh install never pings.
+  // (Not on load / tab return: opening the app shouldn't greet with a dialog.)
+  if(!state.blocks.length){
+    if(loud){ if(state.settings.soundOn) beep(); notify(1); attention(); openFirstPing(); }
     return;
   }
   const gaps=gapSlots();
   if(!gaps.length) return;
-  if(loud){ if(state.settings.soundOn) beep(); notify(gaps.length); }
+  if(loud){ if(state.settings.soundOn) beep(); notify(gaps.length); attention(); }
   openPing(true);
 }
 // Guard so at most ONE deferred boundary retry is ever in flight. Without it
@@ -342,7 +351,7 @@ function notifyExportOverdue(days){
   // (dismiss would also kill the banner); use a dedicated per-day notify flag.
   if(state.settings.exportNotifyDay===todayKey()) return;
   try{
-    new Notification("KIDEON time — Daten sichern",{
+    new Notification("Viertel — Daten sichern",{
       body:"Seit "+days+" Tagen kein Excel-Export. Lad deine Daten runter, damit nichts verloren geht.",
       tag:"timelog-export", renotify:false });
     state.settings.exportNotifyDay=todayKey(); save();
@@ -364,6 +373,10 @@ $("expCancel").onclick=()=>close("exportScrim");
 $("expAll").onclick=()=>{ $("expFrom").value=""; $("expTo").value=""; updateExpCount(); };
 $("expGo").onclick=doExport;
 $("expDatev").onclick=doExportDatev;
+initAuftraege({ openScrim, close });
+wireAuftraege();
+initOneDrive({ openScrim });
+$("syncClose").onclick=()=>close("syncScrim");
 (function initDatevInputs(){ const c=loadDatevCfg(); if(c.pnr) $("datevPnr").value=c.pnr; if(c.la) $("datevLa").value=c.la; })();
 $("expFrom").onchange=updateExpCount; $("expTo").onchange=updateExpCount;
 
@@ -428,7 +441,9 @@ let relatedAppInstalled=false;   // set async via getInstalledRelatedApps()
    help — so the instructions are reachable everywhere. */
 function installed(){ return isStandalone() || relatedAppInstalled; }
 function refreshInstallBtn(){
-  const inst=installed();
+  // Opened as a file (single-file build from SharePoint/OneDrive): a page from
+  // disk cannot be installed as an app, so don't offer it.
+  const inst=installed() || location.protocol==="file:";
   $("installBtn").hidden=inst;
   $("introInstallBtn").hidden=inst;
 }
@@ -477,28 +492,28 @@ function openInstallHelp(){
   let steps, title, lead;
   if(isIOS){
     title="Auf iPhone / iPad installieren";
-    lead="So legst du KIDEON time wie eine native App auf deinen Home-Bildschirm — läuft danach offline, im eigenen Fenster, ohne Browser-Leiste.";
+    lead="So legst du Viertel wie eine native App auf deinen Home-Bildschirm — läuft danach offline, im eigenen Fenster, ohne Browser-Leiste.";
     steps=['Tippe unten in Safari auf <b>Teilen</b> <span class="shareglyph">⬆</span>',
            'Wähle <b>„Zum Home-Bildschirm"</b>',
            'Oben rechts auf <b>Hinzufügen</b> — fertig.'];
   } else if(isMacSafari){
     title="Auf dem Mac installieren";
-    lead="So legst du KIDEON time wie eine native App ins Dock — läuft danach offline, im eigenen Fenster, ohne Browser-Leiste.";
+    lead="So legst du Viertel wie eine native App ins Dock — läuft danach offline, im eigenen Fenster, ohne Browser-Leiste.";
     steps=['Klick in Safari oben rechts auf <b>Teilen</b> <span class="shareglyph">⬆</span> (oder Menü <b>Ablage</b>)',
            'Wähle <b>„Zum Dock hinzufügen"</b>',
            'Bestätigen — läuft danach im eigenen Fenster. (Safari 17 / macOS Sonoma)'];
   } else if(isFirefox){
     title="Installieren";
-    lead="So installierst du KIDEON time als eigenständige App — läuft danach offline, im eigenen Fenster, ohne Browser-Leiste.";
+    lead="So installierst du Viertel als eigenständige App — läuft danach offline, im eigenen Fenster, ohne Browser-Leiste.";
     steps=['Öffne das Browser-<b>Menü</b> (⋮ oben rechts)',
            'Wähle <b>„App installieren"</b> / „Zum Startbildschirm hinzufügen"',
            'Bestätigen — läuft danach im eigenen Fenster.'];
   } else {
     title="Installieren";
-    lead="So installierst du KIDEON time als eigenständige App — läuft danach offline, im eigenen Fenster, ohne Browser-Leiste.";
+    lead="So installierst du Viertel als eigenständige App — läuft danach offline, im eigenen Fenster, ohne Browser-Leiste.";
     steps=['Klick in der Adressleiste auf das <b>Installieren-Symbol</b> (↗ bzw. Monitor mit Pfeil)',
            'Alternativ Browser-<b>Menü</b> (⋮) → <b>„App installieren"</b>',
-           'Bestätigen — KIDEON time läuft danach offline im eigenen Fenster.'];
+           'Bestätigen — Viertel läuft danach offline im eigenen Fenster.'];
   }
   $("installTitle").textContent=title;
   $("installLead").textContent=lead;
@@ -528,9 +543,10 @@ function applyTheme(){
   btn.setAttribute("aria-label", dark?"Zu hellem Design wechseln":"Zu dunklem Design wechseln");
   btn.removeAttribute("aria-pressed");
   // tint the OS status bar / window chrome to match the app
-  const meta=$("metaTheme"); if(meta) meta.setAttribute("content", dark?"#0f2137":"#faf9f7");
+  const meta=$("metaTheme"); if(meta) meta.setAttribute("content", dark?"#000000":"#ffffff");
 }
-$("themeBtn").onclick=()=>{ state.settings.theme=(state.settings.theme==="light")?"dark":"light"; save(); applyTheme(); };
+$("themeBtn").onclick=()=>{ state.settings.theme=(state.settings.theme==="light")?"dark":"light";
+  state.settings.themeChosen=true; save(); applyTheme(); };
 
 // "Blockgröße = dein Abrechnungstakt" education: a transient toast shown ONCE
 // per settings change (i.e. the first time the user changes the block size in
@@ -607,19 +623,32 @@ $("notifyBtn").onclick=async()=>{
   let p=Notification.permission;
   if(p!=="granted") p=await Notification.requestPermission();
   state.settings.notifyOn=(p==="granted"); save(); refreshNotifyBtn();
-  toast(p==="denied" ? "Im Browser blockiert — bitte dort erlauben"
-                     : (state.settings.notifyOn?"Erinnerungen eingeschaltet":"Erinnerungen ausgeschaltet"));
+  if(state.settings.notifyOn){ notifyTest(); toast("Erinnerungen eingeschaltet — eine Test-Erinnerung ist unterwegs"); }
+  else if(notifyBlocked()) explainBlocked();
+  else toast("Erinnerungen ausgeschaltet");
 };
+// Denied without a prompt is the normal case for a page opened from disk
+// (single-file build from SharePoint) or under a remote-desktop policy —
+// say so plainly and point to what still works, instead of a dead button.
+function explainBlocked(){
+  state.settings.notifyNudgeDismissed=true; save(); refreshNotifyNudge();
+  toast(location.protocol==="file:"
+    ? "Als Datei geöffnet erlaubt Edge keine Benachrichtigungen. Viertel erinnert dich mit Ton, Dialog und blinkendem Fenstertitel."
+    : "Benachrichtigungen sind im Browser oder per Richtlinie gesperrt. Viertel erinnert dich mit Ton, Dialog und blinkendem Fenstertitel.",
+    { action: "OK", onAction: () => {} });
+}
 function refreshNotifyBtn(){
   const on=state.settings.notifyOn && ("Notification" in window) && Notification.permission==="granted";
-  $("notifyBtn").textContent=on?"🔕 Erinnerungen ausschalten":"🔔 Erinnerungen anschalten";
-  $("notifyBtn").classList.toggle("ghost",!on);
+  const blocked=notifyBlocked();
+  $("notifyBtn").textContent=on?"🔕 Erinnerungen ausschalten"
+    : blocked?"🔔 Benachrichtigungen gesperrt — Ton & Titel aktiv":"🔔 Erinnerungen anschalten";
+  $("notifyBtn").classList.toggle("ghost",!on && !blocked);
   $("notifyBtn").setAttribute("aria-pressed", on?"true":"false");
   refreshNotifyNudge();
 }
 
 /* ---------- notifications-off nudge ----------
-   Reminds the user KIDEON time can only ping them when OS notifications are on.
+   Reminds the user Viertel can only ping them when OS notifications are on.
    Shown once until dismissed; vanishes on its own once notifications are granted. */
 function notifyGranted(){
   return state.settings.notifyOn && ("Notification" in window) && Notification.permission==="granted";
@@ -629,6 +658,7 @@ function refreshNotifyNudge(){
   // Only ONE banner at a time — the export/data-loss nudge takes priority, so
   // hold this one back whenever that one is (or would be) showing.
   const show = supported && !notifyGranted() && !state.settings.notifyNudgeDismissed
+            && !notifyBlocked()   // nothing to enable — the bar would only frustrate
             && !$("intro").classList.contains("show")
             && !exportNudgeWants();
   $("notifyNudge").hidden = !show;
@@ -648,7 +678,8 @@ $("nudgeEnable").onclick=async()=>{
   }
   if(!state.settings.soundOn){ state.settings.soundOn=true; refreshSoundBtn(); beep(); }
   save(); refreshNotifyBtn();
-  if(notifyGranted()) toast("Erinnerungen eingeschaltet — du wirst jetzt erinnert");
+  if(notifyGranted()){ notifyTest(); toast("Erinnerungen eingeschaltet — eine Test-Erinnerung ist unterwegs"); }
+  else if(notifyBlocked()) explainBlocked();
   else { openMenu(); toast("Den Ping-Takt stellst du hier unter Blockgröße ein"); }
 };
 
@@ -727,3 +758,4 @@ function boot(){
   else { setTimeout(()=>pingOpenSlots(false), 900); }  // initial catch-up
 }
 boot();
+startOneDrive();

@@ -159,7 +159,7 @@ export function renderCalendar() {
       // Still SR-discoverable via role=img + aria-label; the tooltip is hover-only.
       b.tabIndex = -1;
       b.setAttribute('aria-label', 'Aktivitätsspur ' + range
-        + ': in dieser Zeit war KIDEON time geöffnet. So siehst du, welche Lücken echte Pausen sind und was du noch nachtragen kannst.');
+        + ': in dieser Zeit war Viertel geöffnet. So siehst du, welche Lücken echte Pausen sind und was du noch nachtragen kannst.');
       // custom instant tooltip — NO native title (which has a ~1s browser delay)
       const tip = document.createElement('div'); tip.className = 'beat-tip';
       tip.setAttribute('aria-hidden', 'true');
@@ -167,7 +167,7 @@ export function renderCalendar() {
       th.textContent = 'Aktivitätsspur · ' + range;
       tip.appendChild(th);
       tip.appendChild(document.createTextNode(
-        'In dieser Zeit war KIDEON time geöffnet — hilft dir zu sehen, welche Lücken echte Pausen sind und was du noch nachtragen kannst. Bleibt nur auf diesem Gerät.'));
+        'In dieser Zeit war Viertel geöffnet — hilft dir zu sehen, welche Lücken echte Pausen sind und was du noch nachtragen kannst. Bleibt nur auf diesem Gerät.'));
       b.appendChild(tip);
       grid.appendChild(b);
     });

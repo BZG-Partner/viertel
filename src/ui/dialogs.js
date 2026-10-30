@@ -36,6 +36,7 @@ import {
 import { $ } from './dom.js';
 import { toast } from './notify.js';
 import { render } from './calendar.js';
+import { auftragChips, attachAuftragList } from './auftraege.js';
 
 // Same thin wrapper main.js / calendar.js use: supply the active block size to
 // the pure, parameterised time.js implementation so callers keep the 1-arg form.
@@ -77,8 +78,13 @@ function openSinglePing(slot,opts={}){
   const body=$("pingBody"); body.innerHTML="";
   const inp=document.createElement("input");
   inp.className="txt"; inp.setAttribute("autocomplete","off");
-  inp.placeholder="Stichwort … z. B. Meeting, Doku, Telefonat";
+  inp.placeholder="Kürzel + Stichwort … z. B. 10023-JA-25 Telefonat";
+  attachAuftragList(inp);
   body.appendChild(inp);
+  // Favoriten-Aufträge write their Kürzel in front of the typed comment —
+  // they never commit on their own (the comment is the point of the ping).
+  const ac=auftragChips(()=>inp);
+  if(ac) body.appendChild(ac);
 
   // M7 (WCAG 2.1.1): the manual "+ Jetzt eintragen" dialog optionally exposes
   // Datum/Von/Bis behind a default-closed disclosure — the only keyboard path
@@ -157,6 +163,7 @@ function openCatchup(gaps){
   $("pingTitle").textContent="Was war seit eben los?";
   $("pingSub").textContent="Lücken der letzten 2 Stunden. Leer lassen ist ok — du warst evtl. nicht am PC.";
   const body=$("pingBody"); body.innerHTML="";
+  let lastGapInp=null;   // the Auftrag chips write into the gap row last focused
 
   // One .gaprow with a reversible ✕: clicking toggles between active and "leer
   // gelassen". Skipping remembers any text so it can be restored on undo.
@@ -167,7 +174,8 @@ function openCatchup(gaps){
     const row=document.createElement("div"); row.className="gaprow";
     const tg=document.createElement("span"); tg.className="tg"; tg.textContent=hhmm(s)+"–"+hhmm(e);
     const inp=document.createElement("input"); inp.setAttribute("autocomplete","off");
-    inp.placeholder="Stichwort …";
+    inp.placeholder="Stichwort …"; attachAuftragList(inp);
+    inp.addEventListener("focus",()=>{ lastGapInp=inp; });
     const range="("+hhmm(s)+"–"+hhmm(e)+")";
     const skip=document.createElement("button"); skip.type="button"; skip.className="skip";
     let stash=null;
@@ -220,6 +228,8 @@ function openCatchup(gaps){
   // quick "all = X" — fills the run inputs; per-slot overrides still win on save
   const quick=recentChips(v=>{ groups.forEach(g=>{ if(!g.top.skipped()) g.top.inp.value=v; }); },null);
   quick.style.marginTop="14px"; body.appendChild(quick);
+  const ac=auftragChips(()=>lastGapInp||groups[0].top.inp);
+  if(ac) body.appendChild(ac);
 
   const foot=$("pingFoot"); foot.innerHTML="";
   const skipAll=document.createElement("button"); skipAll.className="btn ghost";
@@ -264,9 +274,12 @@ export function openRangeEntry(s,e){
   $("pingSub").textContent=hhmm(s)+" – "+hhmm(e)+" · "+fmtDur(mins)+" · "+DOW[s.getDay()]+" "+s.getDate()+". "+MON[s.getMonth()];
   const body=$("pingBody"); body.innerHTML="";
   const inp=document.createElement("input"); inp.className="txt"; inp.setAttribute("autocomplete","off");
-  inp.placeholder="z. B. Meeting, Fokuszeit, Mittag …";
+  inp.placeholder="Kürzel + Stichwort … z. B. 10023-JA-25 Besprechung";
   if(existLabels.length){ inp.value=existLabels.length===1?existLabels[0]:""; }
+  attachAuftragList(inp);
   body.appendChild(inp);
+  const ac=auftragChips(()=>inp);
+  if(ac) body.appendChild(ac);
   if(existing.length){
     const note=document.createElement("p"); note.className="muted"; note.style.marginTop="10px";
     note.textContent="⚠ Überschreibt vorhandene Blöcke: "+existLabels.join(", ");
@@ -316,6 +329,12 @@ export function openMorningPing(){
   // user here in the evening too, where "Guten Morgen" would read oddly.
   openCurrentSlotPing("WILLKOMMEN ZURÜCK");
 }
+export function openFirstPing(){
+  // Fresh start without any entry: gapSlots() reports nothing (no history to
+  // measure gaps against), so the boundary tick asks about NOW instead —
+  // otherwise a brand-new user is never pinged at all.
+  openCurrentSlotPing(getSlotMin()+"-MINUTEN-PING");
+}
 function closePing(){ closeScrim("pingScrim"); }
 
 /* ============================================================
@@ -337,6 +356,9 @@ export function openEdit(seg){
     const c=document.createElement("button"); c.className="chip-b"; c.style.setProperty("--bc",colorFor(l));
     c.textContent=l; c.title=l; c.onclick=()=>{ inp.value=l; }; chips.appendChild(c);
   });
+  attachAuftragList(inp);
+  const ac=auftragChips(()=>inp);
+  if(ac) chips.appendChild(ac);
 
   // Per-slot rows, tucked behind a default-closed disclosure. The top Tätigkeit
   // field is the whole event; splitting it into differently-labelled sub-blocks

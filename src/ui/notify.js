@@ -49,11 +49,57 @@ export function toast(m, opts) {
 export function notify(n) {
   if (!state.settings.notifyOn || !('Notification' in window) || Notification.permission !== 'granted') return;
   try {
-    new Notification('KIDEON time — Ping', {
+    const note = new Notification('Viertel — Ping', {
       body: n > 1 ? (n + ' Einträge nachzutragen') : 'Woran arbeitest du gerade?',
-      tag: 'timelog-ping', renotify: true,
+      tag: 'timelog-ping', renotify: true, requireInteraction: true,
     });
+    note.onclick = () => { window.focus(); note.close(); };
   } catch (e) { /* notifications are best-effort */ }
+}
+
+/** Fire one notification right away (and the ping sound), so the user sees
+    whether reminders actually reach the desktop — in a remote-desktop session
+    Windows or browser policies may swallow them silently. */
+export function notifyTest() {
+  if (state.settings.soundOn) beep();
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  try {
+    new Notification('Viertel — Test', { body: 'So sieht der Ping aus. Kommt diese Meldung an, funktionieren die Erinnerungen.', tag: 'timelog-test' });
+  } catch (e) { toast('Benachrichtigung wurde vom System blockiert'); }
+}
+
+/* ---------- window title as a fallback signal ----------
+   When OS notifications are unavailable (Viertel opened as a file, or a
+   remote-desktop policy blocks them), the ping still needs to reach a user who
+   is in another window. The page title shows in the Windows taskbar and on the
+   Edge tab, so it switches to a question at once and keeps blinking (the
+   browser throttles background timers, so the first switch matters most)
+   until the user comes back to Viertel. */
+const ATTN = '⏰ Woran arbeitest du? · Viertel';
+let blinkT = null, baseTitle = null;
+export function attention() {
+  if (blinkT || document.hasFocus()) return;   // looking at Viertel: the dialog is enough
+  baseTitle = document.title;
+  document.title = ATTN;
+  let on = true;
+  blinkT = setInterval(() => { on = !on; document.title = on ? ATTN : baseTitle; }, 1000);
+  const stop = () => {
+    if (document.hidden) return;
+    clearInterval(blinkT); blinkT = null; document.title = baseTitle;
+    document.removeEventListener('visibilitychange', stop); window.removeEventListener('focus', stop);
+  };
+  document.addEventListener('visibilitychange', stop); window.addEventListener('focus', stop);
+}
+
+/** 'granted' | 'denied' | 'default' | 'unsupported'. */
+export function notifyPermission() {
+  return 'Notification' in window ? Notification.permission : 'unsupported';
+}
+/** True when OS notifications cannot be had: refused, or Viertel opened as a
+    file — Edge then answers "not decided" forever without ever asking. */
+export function notifyBlocked() {
+  const p = notifyPermission();
+  return p === 'denied' || (location.protocol === 'file:' && p !== 'granted');
 }
 
 /* ---------- sound ---------- */

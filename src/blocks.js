@@ -25,12 +25,17 @@ import {
   iso, sameDay, minOfDay,
   floorSlot as floorSlotMin,
 } from './time.js';
+import { parseLabel, auftragList } from './auftraege.js';
 
 const floorSlot = (d) => floorSlotMin(d, getSlotMin());
 
 /* ---------- colors ---------- */
+/* Blocks of one Auftrag share a hue (keyed by its Kürzel), whatever comment
+   follows — so a day reads as "which Mandat when" at a glance. */
 export function colorFor(label){
-  let h=0; for(let i=0;i<label.length;i++) h=(h*31+label.charCodeAt(i))>>>0;
+  const a=parseLabel(label,auftragList()).auftrag;
+  const key=a?a.kz.toLowerCase():label;
+  let h=0; for(let i=0;i<key.length;i++) h=(h*31+key.charCodeAt(i))>>>0;
   return PALETTE[h%PALETTE.length];
 }
 export function tint(hex){ return hex+"3a"; }   // fill alpha

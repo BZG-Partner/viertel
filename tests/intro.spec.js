@@ -48,11 +48,13 @@ test.describe('first-run welcome', () => {
     await expect(page.locator('#intro')).not.toHaveClass(/show/);
   });
 
-  test('welcome links out to the external marketing page (kideon.de/time)', async ({ page }) => {
+  test('menu fine print credits the upstream project (KIDEON time on GitHub)', async ({ page }) => {
     await freshIntro(page);
-    const more = page.locator('.welcome-more a');
+    await page.locator('#introStart').click();
+    await page.locator('#menuBtn').click();
+    const more = page.locator('.menu-credit a');
     await expect(more).toBeVisible();
-    await expect(more).toHaveAttribute('href', 'https://kideon.de/time');
+    await expect(more).toHaveAttribute('href', 'https://github.com/Kideon-Innovation/time');
     await expect(more).toHaveAttribute('target', '_blank');
   });
 
@@ -73,13 +75,13 @@ test.describe('first-run welcome', () => {
     await expect(page.locator('#cal')).toBeVisible();
   });
 
-  test('compliance badges are shown (DSGVO / §203 / lokal)', async ({ page }) => {
+  test('local-only badges are shown (Rechner / kein Server / offline)', async ({ page }) => {
     await freshIntro(page);
     const badges = page.locator('.intro-badges li');
     await expect(badges).toHaveCount(3);
-    await expect(page.locator('.intro-badges')).toContainText('DSGVO');
-    await expect(page.locator('.intro-badges')).toContainText('203');
-    await expect(page.locator('.intro-badges')).toContainText('lokal');
+    await expect(page.locator('.intro-badges')).toContainText('Nur auf diesem Rechner');
+    await expect(page.locator('.intro-badges')).toContainText('Kein Server');
+    await expect(page.locator('.intro-badges')).toContainText('Offline');
   });
 
   test('clicking the backdrop dismisses the welcome and enters the app', async ({ page }) => {

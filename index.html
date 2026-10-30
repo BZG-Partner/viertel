@@ -3,20 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>KIDEON time — Zeiterfassung für Kanzleien</title>
+<title>Viertel — Zeiterfassung für Kanzleien</title>
 
 <!-- PWA — manifest <link> is injected by vite-plugin-pwa at build time -->
-<meta name="theme-color" content="#faf9f7" id="metaTheme">
+<meta name="theme-color" content="#ffffff" id="metaTheme">
 <!-- Registers the Workbox SW (offline) + auto-reloads on a new deploy. See src/pwa.js. -->
 <script type="module" src="/src/pwa.js"></script>
 <meta name="color-scheme" content="dark light">
-<meta name="application-name" content="KIDEON time">
-<meta name="description" content="Zeiterfassung für Kanzleien — KIDEON time fragt dich in festen Abständen, woran du arbeitest, und baut deinen Stundenzettel automatisch auf. Was du einträgst, verlässt nie den Computer: kein Server, kein Konto. Gemacht für Berufsgeheimnisträger — die Verschwiegenheitspflicht (§203 StGB) bleibt gewahrt. Läuft offline, Export als Excel.">
+<meta name="application-name" content="Viertel">
+<meta name="description" content="Zeiterfassung für Kanzleien — Viertel fragt dich in festen Abständen, woran du arbeitest, und baut deinen Stundenzettel automatisch auf. Was du einträgst, verlässt nie den Computer: kein Server, kein Konto. Läuft offline, Export als Excel.">
 <!-- iOS standalone -->
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="KIDEON time">
+<meta name="apple-mobile-web-app-title" content="Viertel">
 <!-- icons live in public/ (served verbatim). Relative hrefs (no leading slash)
      resolve against the document URL, so the home-screen icon is found at the
      domain root (and would still resolve under a subpath) — exactly how the
@@ -41,20 +41,20 @@
 <!-- First-run welcome — a small "was ist das?" card floating over the app, not a
      full-screen wall. The app stays visible behind it; click the backdrop, the ×
      or "Loslegen" to dismiss. Also re-opened via the menu's "Was ist das?".
-     The full marketing landing lives at https://kideon.de/time. -->
+     Viertel is a fork of KIDEON time (MIT) — credited in the menu's fine print. -->
 <div class="intro" id="intro" aria-hidden="true">
   <div class="intro-wrap" role="dialog" aria-modal="true" aria-labelledby="introTitle">
     <button class="intro-x" id="introClose" title="Schließen" aria-label="Schließen">×</button>
     <section class="welcome">
       <span class="dot"></span>
       <p class="intro-kick">Der digitale Stundenzettel für Kanzleien</p>
-      <h1 id="introTitle">KIDEON&nbsp;<em>time</em></h1>
-      <p class="lead">Zeiterfassung, die leise nachfragt — dein Stundenzettel baut sich von selbst. <strong>Deine Daten verlassen nie dieses Gerät.</strong></p>
+      <h1 id="introTitle"><em>Viertel</em></h1>
+      <p class="lead">Zeiterfassung im Viertelstunden-Takt, die leise nachfragt — dein Stundenzettel baut sich von selbst, die DATEV-Liste gleich mit. <strong>Deine Daten verlassen nie dieses Gerät.</strong></p>
 
       <ul class="intro-badges">
-        <li>DSGVO-konform</li>
-        <li>§&nbsp;203 StGB</li>
-        <li>100&nbsp;% lokal</li>
+        <li>Nur auf diesem Rechner</li>
+        <li>Kein Server, kein Konto</li>
+        <li>Offline</li>
       </ul>
 
       <div class="welcome-cta">
@@ -62,9 +62,6 @@
         <button class="btn install-cta" id="introInstallBtn">↗ App installieren</button>
       </div>
 
-      <p class="welcome-more">
-        <a href="https://kideon.de/time" target="_blank" rel="noopener noreferrer">Open&nbsp;Source &amp; mehr erfahren ↗</a>
-      </p>
     </section>
   </div>
 </div>
@@ -73,7 +70,7 @@
   <header>
     <div class="brand">
       <span class="dot"></span>
-      <h1>KIDEON time</h1>
+      <h1>Viertel</h1>
       <small>Zeiterfassung für Kanzleien</small>
     </div>
     <div class="clock">
@@ -94,6 +91,7 @@
     </div>
     <div class="spacer"></div>
     <div class="controls">
+      <button class="btn" id="datevListBtn" title="Tagesliste für die DATEV-Zeiterfassung">DATEV-Liste</button>
       <button class="btn amber" id="logNowBtn">+ Jetzt eintragen</button>
       <div class="menu-wrap">
         <button class="btn icon" id="menuBtn" title="Menü" aria-haspopup="true" aria-expanded="false">☰</button>
@@ -109,6 +107,10 @@
             <select class="hsel" id="reminderSel" title="Erinnerungs-Intervall"></select>
           </label>
           <div class="menu-sep"></div>
+          <button class="menu-item" id="datevListMenu">⏱ DATEV-Liste (heute)</button>
+          <button class="menu-item" id="auftrBtn">📁 Aufträge &amp; Mitarbeiternr.</button>
+          <button class="menu-item" id="syncBtn">☁ OneDrive-Ablage</button>
+          <div class="menu-sep"></div>
           <button class="menu-item" id="themeBtn">🌙 Theme</button>
           <button class="menu-item" id="notifyBtn">🔔 Erinnerungen anschalten</button>
           <button class="menu-item" id="soundBtn">🔇 Ton ausschalten</button>
@@ -120,6 +122,8 @@
                (see main.js). Hidden once the app is installed. -->
           <button class="menu-item" id="installBtn">↗ App installieren</button>
           <button class="menu-item" id="aboutBtn">❓ Was ist das?</button>
+          <div class="menu-credit">Open Source (MIT) · basiert auf
+            <a href="https://github.com/Kideon-Innovation/time" target="_blank" rel="noopener noreferrer">KIDEON time</a></div>
         </div>
       </div>
       <input type="file" id="importFile" accept=".xlsx,.xls" hidden>
@@ -129,10 +133,17 @@
   <!-- Notifications-off nudge: ambient bar, dismissible once -->
   <div class="nudge" id="notifyNudge" hidden>
     <span class="nudge-ic" aria-hidden="true">🔔</span>
-    <span class="nudge-txt">KIDEON time kann dich nur erinnern, wenn Benachrichtigungen an sind.
+    <span class="nudge-txt">Viertel kann dich nur erinnern, wenn Benachrichtigungen an sind.
       <em id="nudgeHint"></em></span>
     <button class="btn amber nudge-act" id="nudgeEnable">Aktivieren</button>
     <button class="nudge-x" id="nudgeDismiss" title="Ausblenden" aria-label="Hinweis ausblenden">×</button>
+  </div>
+
+  <!-- OneDrive-Ablage: Chromium asks again for file access after a restart. -->
+  <div class="nudge" id="syncNudge" role="status" hidden>
+    <span class="nudge-ic" aria-hidden="true">☁</span>
+    <span class="nudge-txt">Viertel speichert in OneDrive — bitte den Zugriff für diese Sitzung bestätigen.</span>
+    <button class="btn amber nudge-act" id="syncNudgeGo">Zugriff erlauben</button>
   </div>
 
   <!-- Excel-export reminder: protects against data loss if the user forgets to export. -->
@@ -228,13 +239,176 @@
   </div>
 </div>
 
+
+<!-- Aufträge: Kürzel → DATEV-Auftrag (Mandant · Auftragsart · VJ · TA · Aufwandspos.) -->
+<div class="scrim" id="auftrScrim">
+  <div class="modal wide" role="dialog" aria-modal="true" aria-labelledby="auftrTitle">
+    <div class="modal-h">
+      <div class="kick">AUFTRÄGE</div>
+      <h2 id="auftrTitle">Aufträge für DATEV</h2>
+      <p>Ein Block gehört zu einem Auftrag, wenn sein Text mit dem Kürzel beginnt: <span class="mono">10023-JA-25 Anlagenspiegel</span>. Markiere deine häufigen Aufträge mit ★ — sie erscheinen als Knopf im Ping; alle anderen schlägt das Eingabefeld beim Tippen vor.</p>
+    </div>
+    <div class="modal-b">
+      <div class="row">
+        <div><label class="fl" for="auftrMa">Mitarbeiternr. (DATEV)</label><input class="txt" id="auftrMa" inputmode="numeric" autocomplete="off" placeholder="z. B. 100"></div>
+        <div><label class="fl" for="auftrRound">Abrechnungstakt</label>
+          <select class="txt" id="auftrRound">
+            <option value="up">0,25 Std. — jede angefangene Viertelstunde</option>
+            <option value="nearest">0,25 Std. — kaufmännisch gerundet</option>
+          </select></div>
+      </div>
+      <div class="auftr-import">
+        <div>
+          <b>Aufträge aus DATEV übernehmen</b>
+          <p class="muted">Auftragsliste aus DATEV als Excel oder CSV exportieren und hier einlesen. Kürzel entstehen automatisch aus Mandant, Auftragsart und Jahr (z. B. <span class="mono">10023-JA-25</span>). Favoriten und eigene Kürzel bleiben beim nächsten Import erhalten.</p>
+        </div>
+        <button class="btn amber" id="auftrFileBtn">DATEV-Liste einlesen …</button>
+        <input type="file" id="auftrFile" accept=".xlsx,.xls,.csv,.txt" hidden>
+      </div>
+      <div class="auftr-map" id="auftrMap" hidden>
+        <p class="auftr-map-h"><b id="auftrMapFile">—</b> · Spalten zuordnen</p>
+        <div class="auftr-map-grid" id="auftrMapGrid"></div>
+        <div class="row" style="margin-top:4px">
+          <div><label class="fl" for="auftrMapHead">Kopfzeile ist Zeile</label><select class="txt" id="auftrMapHead"></select></div>
+          <div><label class="fl" for="auftrMapPos">Aufwandspos., wenn keine Spalte</label><input class="txt mono" id="auftrMapPos" autocomplete="off" placeholder="z. B. 100"></div>
+        </div>
+        <label class="auftr-abr" style="margin-top:12px"><input type="checkbox" id="auftrMapPrune"> Aufträge entfernen, die nicht mehr in der Liste stehen (Favoriten bleiben)</label>
+        <p class="muted" id="auftrMapInfo" style="margin-top:10px">—</p>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button class="btn amber" id="auftrMapGo">Importieren</button>
+          <button class="btn ghost" id="auftrMapCancel">Abbrechen</button>
+        </div>
+      </div>
+      <details class="edit-split" style="margin-top:14px">
+        <summary>Einzelnen Auftrag von Hand anlegen</summary>
+      <div class="auftr-form" style="margin-top:10px">
+        <input class="txt mono" id="auftrNew_kz" placeholder="Kürzel*" autocomplete="off" aria-label="Kürzel">
+        <input class="txt" id="auftrNew_name" placeholder="Bezeichnung" autocomplete="off" aria-label="Bezeichnung">
+        <input class="txt mono" id="auftrNew_mandant" placeholder="Mandant*" autocomplete="off" aria-label="Mandantennummer">
+        <input class="txt mono" id="auftrNew_art" placeholder="Auftragsart" autocomplete="off" aria-label="Auftragsart">
+        <input class="txt mono" id="auftrNew_vj" placeholder="VJ" autocomplete="off" aria-label="Veranlagungsjahr">
+        <input class="txt mono" id="auftrNew_ta" placeholder="TA" autocomplete="off" aria-label="TA">
+        <input class="txt mono" id="auftrNew_pos" placeholder="Aufwandspos." autocomplete="off" aria-label="Aufwandsposition">
+        <label class="auftr-abr"><input type="checkbox" id="auftrNew_abr" checked> abr.</label>
+        <button class="btn amber" id="auftrAdd">+ Speichern</button>
+      </div>
+      </details>
+      <div class="auftr-listhead">
+        <p class="muted" id="auftrCount">—</p>
+        <input class="txt" id="auftrFilter" type="search" autocomplete="off" placeholder="Suchen: Mandant, Name, Kürzel …" aria-label="Aufträge durchsuchen">
+      </div>
+      <div class="tbl-wrap">
+        <table class="tbl" id="auftrTable">
+          <thead><tr><th></th><th>Kürzel</th><th>Bezeichnung</th><th>Mandant</th><th>Auftragsart</th><th>VJ</th><th>TA</th><th>Aufwandspos.</th><th>Abr.</th><th></th></tr></thead>
+          <tbody id="auftrBody"></tbody>
+        </table>
+      </div>
+      <details class="edit-split" style="margin-top:14px">
+        <summary>Liste aus Excel einfügen / kopieren</summary>
+        <p class="muted" style="margin:8px 0">Spalten in dieser Reihenfolge: Kürzel · Bezeichnung · Mandant · Auftragsart · VJ · TA · Aufwandspos. · Abr.bar (ja/nein). Bereich in Excel markieren, kopieren, hier einfügen. Gleiches Kürzel = wird überschrieben.</p>
+        <textarea class="txt mono" id="auftrPaste" rows="5" placeholder="10023-JA-25&#9;Jahresabschluss 2025&#9;10023&#9;JA&#9;2025&#9;&#9;100&#9;ja"></textarea>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button class="btn" id="auftrImport">Übernehmen</button>
+          <button class="btn ghost" id="auftrCopy">Liste kopieren (für Excel)</button>
+        </div>
+      </details>
+    </div>
+    <div class="modal-f">
+      <div class="spacer"></div>
+      <button class="btn amber" id="auftrClose">Fertig</button>
+    </div>
+  </div>
+</div>
+
+<!-- OneDrive-Ablage: eigene Zeiten als Datei in OneDrive, zentrale Auftragsliste aus SharePoint -->
+<div class="scrim" id="syncScrim">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="syncTitle">
+    <div class="modal-h">
+      <div class="kick">ABLAGE</div>
+      <h2 id="syncTitle">OneDrive &amp; SharePoint</h2>
+      <p>Viertel arbeitet weiter im Browser und legt zusätzlich alles in einer Datei ab, die OneDrive synchronisiert — mit Versionsverlauf und unter eurer Microsoft-Vereinbarung.</p>
+    </div>
+    <div class="modal-b">
+      <p class="muted" id="syncUnsupported" hidden>Dieser Browser kann keine Dateien in Ordnern ablegen. Bitte Viertel in Microsoft Edge oder Google Chrome öffnen.</p>
+      <div id="syncBody">
+        <div class="sync-card">
+          <b>Meine Zeiten</b>
+          <p class="muted">Einen <b>persönlichen</b> Ordner in deinem OneDrive wählen, z. B. <span class="mono">OneDrive › Viertel</span>. Nicht in einen geteilten Ordner legen. Viertel speichert nach jeder Änderung automatisch.</p>
+          <p class="sync-status" id="syncZStatus">—</p>
+          <div class="sync-btns">
+            <button class="btn amber" id="syncZConnect">Ordner wählen …</button>
+            <button class="btn ghost" id="syncZDisconnect" hidden>Trennen</button>
+          </div>
+        </div>
+        <div class="sync-card">
+          <b>Zentrale Auftragsliste</b>
+          <p class="muted">Die DATEV-Auftragsliste, die eine Person in einer SharePoint-Bibliothek ablegt (über OneDrive synchronisiert). Viertel liest sie bei jedem Start neu ein, wenn sie sich geändert hat. Favoriten und eigene Kürzel bleiben erhalten.</p>
+          <p class="sync-status" id="syncLStatus">—</p>
+          <label class="auftr-abr"><input type="checkbox" id="syncPrune"> Aufträge entfernen, die nicht mehr in der Liste stehen (Favoriten bleiben)</label>
+          <div class="sync-btns">
+            <button class="btn amber" id="syncLConnect">Datei wählen …</button>
+            <button class="btn ghost" id="syncLRefresh" hidden>Jetzt einlesen</button>
+            <button class="btn ghost" id="syncLDisconnect" hidden>Trennen</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-f">
+      <div class="spacer"></div>
+      <button class="btn amber" id="syncClose">Fertig</button>
+    </div>
+  </div>
+</div>
+
+<!-- DATEV-Liste: Tageszeilen in der Feldreihenfolge der DATEV-Erfassungszeile -->
+<div class="scrim" id="datevScrim">
+  <div class="modal wide" role="dialog" aria-modal="true" aria-labelledby="dvTitle">
+    <div class="modal-h">
+      <div class="kick">DATEV-LISTE · ZEITEN UND KOSTEN</div>
+      <h2 id="dvTitle">—</h2>
+      <div class="dv-nav">
+        <button class="btn icon" id="dvPrev" title="Vortag" aria-label="Vortag">◀</button>
+        <button class="btn" id="dvToday">Heute</button>
+        <button class="btn icon" id="dvNext" title="Nächster Tag" aria-label="Nächster Tag">▶</button>
+        <input type="date" id="dvDate" aria-label="Tag wählen">
+        <span class="muted">Feld anklicken = kopieren · Haken = in DATEV erfasst</span>
+      </div>
+    </div>
+    <div class="modal-b">
+      <p class="muted" id="dvEmpty" hidden>An diesem Tag ist nichts erfasst.</p>
+      <div class="tbl-wrap">
+        <table class="tbl dv" id="dvTable">
+          <thead><tr><th>✓</th><th>Wert Std.</th><th>Datum</th><th>Mandant</th><th>Auftragsart</th><th>VJ</th><th>TA</th><th>Aufwandspos.</th><th>Mitarb.</th><th>Abr.</th><th>Kommentar</th><th>Kürzel</th></tr></thead>
+          <tbody id="dvBody"></tbody>
+        </table>
+      </div>
+      <div class="dv-warn" id="dvOpen" hidden></div>
+      <p class="muted" id="dvSum" style="margin-top:12px"></p>
+      <details class="edit-split" style="margin-top:12px">
+        <summary>Zeitraum als Excel exportieren</summary>
+        <div class="row" style="margin-top:8px">
+          <div><label class="fl" for="dvFrom">Von</label><input type="date" class="txt" id="dvFrom"></div>
+          <div><label class="fl" for="dvTo">Bis</label><input type="date" class="txt" id="dvTo"></div>
+        </div>
+        <p class="muted" style="margin-top:8px">Leer = der angezeigte Tag. Spalten wie in der DATEV-Erfassungszeile.</p>
+      </details>
+    </div>
+    <div class="modal-f">
+      <button class="btn ghost" id="dvToAuftr">📁 Aufträge</button>
+      <div class="spacer"></div>
+      <button class="btn ghost" id="dvXlsx">↓ .xlsx</button>
+      <button class="btn amber" id="dvClose">Schließen</button>
+    </div>
+  </div>
+</div>
+
 <!-- Install help modal (iOS / fallback) -->
 <div class="scrim" id="installScrim">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="installTitle">
     <div class="modal-h">
       <div class="kick">INSTALLIEREN</div>
-      <h2 id="installTitle">KIDEON time als App</h2>
-      <p id="installLead">So legst du KIDEON time wie eine native App auf deinen Home-Bildschirm — läuft danach offline, im eigenen Fenster, ohne Browser-Leiste.</p>
+      <h2 id="installTitle">Viertel als App</h2>
+      <p id="installLead">So legst du Viertel wie eine native App auf deinen Home-Bildschirm — läuft danach offline, im eigenen Fenster, ohne Browser-Leiste.</p>
     </div>
     <div class="modal-b" id="installBody"></div>
     <div class="modal-f">
